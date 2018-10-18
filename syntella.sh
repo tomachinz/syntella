@@ -4,12 +4,13 @@ echo " \_____  <   |  |/  ___/\   __\/ __ \ /     \|   |/    \   __\/ __ \|  |  
 echo " /        \___  |\___ \  |  | \  ___/|  Y Y  \   |   |  \  | \  ___/|  |__";
 echo "/_______  / ____/____  > |__|  \___  >__|_|  /___|___|  /__|  \___  >____/";
 echo "        \/\/         \/            \/      \/         \/          \/      ";
-echo "==========================================================================";
+echo "==============v1.5========================================================";
 HOST=$(hostname)
 TIMESTAMP=$(date +%s)
-LOGPATH="$HOME/syntella"
+# LOGPATH="$HOME/syntella"
 LOGFILE="syntella-$HOST-$TIMESTAMP.txt"
-LOGWITHPATH ="$LOGPATH/$LOGFILE"
+# LOGWITHPATH="$LOGPATH/$LOGFILE"
+LOGWITHPATH="$LOGFILE"
 mkdir $LOGPATH
 touch $LOGWITHPATH
 
@@ -28,8 +29,8 @@ uname -a                                                     >>  $LOGWITHPATH
 tell_user "The following users are logged in"
 w                                                            >>  $LOGWITHPATH
 tell_user "Checking router tables (uno momento)"
-netstat -Wr                                                  >>  $LOGWITHPATH
 netstat -Walt                                                >>  $LOGWITHPATH
+netstat -Wr                                                  >>  $LOGWITHPATH
 tell_user "nmap -A localhost | Shows listening servers on local"
 nmap -A localhost                                            >>  $LOGWITHPATH
 tell_user "Running lsof | Process names of servers"
@@ -104,7 +105,8 @@ w                                                            >>  $LOGWITHPATH
 echo "Finito."                                               >>  $LOGWITHPATH
 echo "Your report can be found at: $LOGWITHPATH " >>  $LOGWITHPATH
 echo "https://tomachi.co/syntella-uploads/uploads/$LOGFILE " >>  $LOGWITHPATH
-
+mkdir ~/syntella
+cp $LOGWITHPATH ~/syntella
 curl -X POST -F "synreport=@$LOGWITHPATH " https://tomachi.co/syntella-uploads/fileUpload.php
 sleep 1
 echo "  _________               __                 .___        __         .__   ";

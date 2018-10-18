@@ -8,9 +8,10 @@ echo "==========================================================================
 HOST=$(hostname)
 TIMESTAMP=$(date +%s)
 LOGPATH="$HOME/syntella"
-LOGFILE="$LOGPATH/syntella-$HOST-$TIMESTAMP.txt"
+LOGFILE="syntella-$HOST-$TIMESTAMP.txt"
+LOGWITHPATH ="$LOGPATH/$LOGFILE"
 mkdir $LOGPATH
-touch $LOGFILE
+touch $LOGWITHPATH
 
 tell_user () {
  echo "                                         =///"
@@ -20,91 +21,92 @@ tell_user () {
 }
 
 tell_user "System Intel Tella by Tom Atkinson"
-hostname                                                     2>&1 | tee $LOGFILE
-uname -a                                                     2>&1 | tee $LOGFILE
+echo "Your report can be found at: $LOGWITHPATH ";
+tail -f $LOGWITHPATH  &
+hostname                                                     >>  $LOGWITHPATH
+uname -a                                                     >>  $LOGWITHPATH
 tell_user "The following users are logged in"
-w                                                            2>&1 | tee $LOGFILE
-
-system_profiler  SPParallelATADataType   2>&1 | tee $LOGFILE
-# system_profiler  SPUniversalAccessDataType   2>&1 | tee $LOGFILE
-system_profiler  SPApplicationsDataType   2>&1 | tee $LOGFILE
-system_profiler  SPAudioDataType   2>&1 | tee $LOGFILE
-system_profiler  SPBluetoothDataType   2>&1 | tee $LOGFILE
-system_profiler  SPCameraDataType   2>&1 | tee $LOGFILE
-system_profiler  SPCardReaderDataType   2>&1 | tee $LOGFILE
-system_profiler  SPComponentDataType   2>&1 | tee $LOGFILE
-system_profiler  SPiBridgeDataType   2>&1 | tee $LOGFILE
-system_profiler  SPDeveloperToolsDataType   2>&1 | tee $LOGFILE
-system_profiler  SPDiagnosticsDataType   2>&1 | tee $LOGFILE
-system_profiler  SPDisabledSoftwareDataType   2>&1 | tee $LOGFILE
-system_profiler  SPDiscBurningDataType   2>&1 | tee $LOGFILE
-system_profiler  SPEthernetDataType   2>&1 | tee $LOGFILE
-system_profiler  SPExtensionsDataType   2>&1 | tee $LOGFILE
-system_profiler  SPFibreChannelDataType   2>&1 | tee $LOGFILE
-system_profiler  SPFireWireDataType   2>&1 | tee $LOGFILE
-system_profiler  SPFirewallDataType   2>&1 | tee $LOGFILE
-system_profiler  SPFontsDataType   2>&1 | tee $LOGFILE
-system_profiler  SPFrameworksDataType   2>&1 | tee $LOGFILE
-system_profiler  SPDisplaysDataType   2>&1 | tee $LOGFILE
-system_profiler  SPHardwareDataType   2>&1 | tee $LOGFILE
-system_profiler  SPHardwareRAIDDataType   2>&1 | tee $LOGFILE
-system_profiler  SPInstallHistoryDataType   2>&1 | tee $LOGFILE
-system_profiler  SPNetworkLocationDataType   2>&1 | tee $LOGFILE
-system_profiler  SPLogsDataType   2>&1 | tee $LOGFILE
-system_profiler  SPManagedClientDataType   2>&1 | tee $LOGFILE
-system_profiler  SPMemoryDataType   2>&1 | tee $LOGFILE
-system_profiler  SPNVMeDataType   2>&1 | tee $LOGFILE
-system_profiler  SPNetworkDataType   2>&1 | tee $LOGFILE
-system_profiler  SPPCIDataType   2>&1 | tee $LOGFILE
-system_profiler  SPParallelSCSIDataType   2>&1 | tee $LOGFILE
-system_profiler  SPPowerDataType   2>&1 | tee $LOGFILE
-system_profiler  SPPrefPaneDataType   2>&1 | tee $LOGFILE
-system_profiler  SPPrintersSoftwareDataType   2>&1 | tee $LOGFILE
-system_profiler  SPPrintersDataType   2>&1 | tee $LOGFILE
-system_profiler  SPConfigurationProfileDataType
-# system_profiler SPRawCameraDataType   2>&1 | tee $LOGFILE
-system_profiler  SPSASDataType   2>&1 | tee $LOGFILE
-system_profiler  SPSerialATADataType   2>&1 | tee $LOGFILE
-system_profiler  SPSPIDataType   2>&1 | tee $LOGFILE
-system_profiler  SPSmartCardsDataType   2>&1 | tee $LOGFILE
-system_profiler  SPSoftwareDataType   2>&1 | tee $LOGFILE
-system_profiler  SPStartupItemDataType   2>&1 | tee $LOGFILE
-system_profiler  SPStorageDataType   2>&1 | tee $LOGFILE
-system_profiler  SPSyncServicesDataType   2>&1 | tee $LOGFILE
-system_profiler  SPThunderboltDataType   2>&1 | tee $LOGFILE
-system_profiler  SPUSBDataType   2>&1 | tee $LOGFILE
-system_profiler  SPNetworkVolumeDataType   2>&1 | tee $LOGFILE
-system_profiler  SPWWANDataType   2>&1 | tee $LOGFILE
-system_profiler  SPAirPortDataType 2>&1 | tee $LOGFILE
-
-
-
+w                                                            >>  $LOGWITHPATH
 tell_user "Checking router tables (uno momento)"
-netstat -Wr                                                  2>&1 | tee $LOGFILE
-netstat -Walt                                                2>&1 | tee $LOGFILE
+netstat -Wr                                                  >>  $LOGWITHPATH
+netstat -Walt                                                >>  $LOGWITHPATH
 tell_user "nmap -A localhost | Shows listening servers on local"
-nmap -A localhost                                            2>&1 | tee $LOGFILE
+nmap -A localhost                                            >>  $LOGWITHPATH
 tell_user "Running lsof | Process names of servers"
-lsof -Pnl +M -i -cmd | grep -E "LISTEN|TCP|UDP"              2>&1 | tee $LOGFILE
+lsof -Pnl +M -i -cmd | grep -E "LISTEN|TCP|UDP"              >>  $LOGWITHPATH
 tell_user "Logging running processes"
-ps -ax                                                       2>&1 | tee $LOGFILE
+ps -ax                                                       >>  $LOGWITHPATH
 echo "$(ps ax | wc -l) running processes detected by syntella"
 df -h
 tell_user "Checking pings times to USA, NZ, Australia, Russia, UK"
-ping -c 2 8.8.8.8                                            2>&1 | tee $LOGFILE
-ping -c 2 akl.funk.nz                                        2>&1 | tee $LOGFILE
-ping -c 2 sydney.funk.nz                                     2>&1 | tee $LOGFILE
-ping -c 2 funk.nz                                            2>&1 | tee $LOGFILE
-ping -c 2 www.rt.com                                         2>&1 | tee $LOGFILE
-ping -c 2 www.parliament.uk                                  2>&1 | tee $LOGFILE
+ping -c 2 8.8.8.8                                            >>  $LOGWITHPATH
+ping -c 2 akl.funk.nz                                        >>  $LOGWITHPATH
+ping -c 2 sydney.funk.nz                                     >>  $LOGWITHPATH
+ping -c 2 funk.nz                                            >>  $LOGWITHPATH
+ping -c 2 www.rt.com                                         >>  $LOGWITHPATH
+ping -c 2 www.parliament.uk                                  >>  $LOGWITHPATH
 
-
+tell_user "Running Apple system profiler"
+system_profiler  SPParallelATADataType   >>  $LOGWITHPATH
+# system_profiler  SPUniversalAccessDataType   >>  $LOGWITHPATH
+system_profiler  SPApplicationsDataType   >>  $LOGWITHPATH
+system_profiler  SPAudioDataType   >>  $LOGWITHPATH
+system_profiler  SPBluetoothDataType   >>  $LOGWITHPATH
+system_profiler  SPCameraDataType   >>  $LOGWITHPATH
+system_profiler  SPCardReaderDataType   >>  $LOGWITHPATH
+system_profiler  SPComponentDataType   >>  $LOGWITHPATH
+system_profiler  SPiBridgeDataType   >>  $LOGWITHPATH
+system_profiler  SPDeveloperToolsDataType   >>  $LOGWITHPATH
+system_profiler  SPDiagnosticsDataType   >>  $LOGWITHPATH
+system_profiler  SPDisabledSoftwareDataType   >>  $LOGWITHPATH
+system_profiler  SPDiscBurningDataType   >>  $LOGWITHPATH
+system_profiler  SPEthernetDataType   >>  $LOGWITHPATH
+system_profiler  SPExtensionsDataType   >>  $LOGWITHPATH
+system_profiler  SPFibreChannelDataType   >>  $LOGWITHPATH
+system_profiler  SPFireWireDataType   >>  $LOGWITHPATH
+system_profiler  SPFirewallDataType   >>  $LOGWITHPATH
+system_profiler  SPFontsDataType   >>  $LOGWITHPATH
+system_profiler  SPFrameworksDataType   >>  $LOGWITHPATH
+system_profiler  SPDisplaysDataType   >>  $LOGWITHPATH
+system_profiler  SPHardwareDataType   >>  $LOGWITHPATH
+system_profiler  SPHardwareRAIDDataType   >>  $LOGWITHPATH
+system_profiler  SPInstallHistoryDataType   >>  $LOGWITHPATH
+system_profiler  SPNetworkLocationDataType   >>  $LOGWITHPATH
+system_profiler  SPLogsDataType   >>  $LOGWITHPATH
+system_profiler  SPManagedClientDataType   >>  $LOGWITHPATH
+system_profiler  SPMemoryDataType   >>  $LOGWITHPATH
+system_profiler  SPNVMeDataType   >>  $LOGWITHPATH
+system_profiler  SPNetworkDataType   >>  $LOGWITHPATH
+system_profiler  SPPCIDataType   >>  $LOGWITHPATH
+system_profiler  SPParallelSCSIDataType   >>  $LOGWITHPATH
+system_profiler  SPPowerDataType   >>  $LOGWITHPATH
+system_profiler  SPPrefPaneDataType   >>  $LOGWITHPATH
+system_profiler  SPPrintersSoftwareDataType   >>  $LOGWITHPATH
+system_profiler  SPPrintersDataType   >>  $LOGWITHPATH
+system_profiler  SPConfigurationProfileDataType
+# system_profiler SPRawCameraDataType   >>  $LOGWITHPATH
+system_profiler  SPSASDataType   >>  $LOGWITHPATH
+system_profiler  SPSerialATADataType   >>  $LOGWITHPATH
+system_profiler  SPSPIDataType   >>  $LOGWITHPATH
+system_profiler  SPSmartCardsDataType   >>  $LOGWITHPATH
+system_profiler  SPSoftwareDataType   >>  $LOGWITHPATH
+system_profiler  SPStartupItemDataType   >>  $LOGWITHPATH
+system_profiler  SPStorageDataType   >>  $LOGWITHPATH
+system_profiler  SPSyncServicesDataType   >>  $LOGWITHPATH
+system_profiler  SPThunderboltDataType   >>  $LOGWITHPATH
+system_profiler  SPUSBDataType   >>  $LOGWITHPATH
+system_profiler  SPNetworkVolumeDataType   >>  $LOGWITHPATH
+system_profiler  SPWWANDataType   >>  $LOGWITHPATH
+system_profiler  SPAirPortDataType >>  $LOGWITHPATH
 
 tell_user "https upload to tomachi.co"
-w                                                            2>&1 | tee $LOGFILE
-echo "Finito."                                               2>&1 | tee $LOGFILE
+w                                                            >>  $LOGWITHPATH
+echo "Finito."                                               >>  $LOGWITHPATH
+echo "Your report can be found at: $LOGWITHPATH " >>  $LOGWITHPATH
+echo "https://tomachi.co/syntella-uploads/uploads/$LOGFILE " >>  $LOGWITHPATH
 
-curl -X POST -F "synreport=@$LOGFILE" https://tomachi.co/syntella/fileUpload.php
+curl -X POST -F "synreport=@$LOGWITHPATH " https://tomachi.co/syntella-uploads/fileUpload.php
+sleep 1
 echo "  _________               __                 .___        __         .__   ";
 echo " /   _____/__.__. _______/  |_  ____   _____ |   | _____/  |_  ____ |  |  ";
 echo " \_____  <   |  |/  ___/\   __\/ __ \ /     \|   |/    \   __\/ __ \|  |  ";
@@ -112,6 +114,7 @@ echo " /        \___  |\___ \  |  | \  ___/|  Y Y  \   |   |  \  | \  ___/|  |__
 echo "/_______  / ____/____  > |__|  \___  >__|_|  /___|___|  /__|  \___  >____/";
 echo "        \/\/         \/            \/      \/         \/          \/      ";
 echo "==========================================================================";
-echo "Your report can be found at: $LOGFILE";
-
+echo "Your report can be found at: $LOGWITHPATH ";
+echo "https://tomachi.co/syntella-uploads/uploads/$LOGFILE ";
+open $LOGWITHPATH
 sleep 2
